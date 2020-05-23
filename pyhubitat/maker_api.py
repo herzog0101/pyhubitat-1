@@ -12,7 +12,7 @@ class MakerAPI:
         self.token = token
         self.api_base_url = api_base_url
         self.ssl_verify = ssl_verify
-        
+
     def _request_sender(self, url_suffix):
         """
         Helper function to send commands to Hubitat Maker API
@@ -20,7 +20,7 @@ class MakerAPI:
         params = {'access_token': self.token}
         url = '{}/{}'.format(self.api_base_url, url_suffix)
         return httpx.get(url, params=params, verify=self.ssl_verify)
-        
+
     def list_devices(self):
         """
         Lists available devices
@@ -31,7 +31,7 @@ class MakerAPI:
     def list_devices_detailed(self):
         """
         Lists available devices with detailed information
-        """       
+        """
         r = self._request_sender('devices/all')
         return r.json()
 
@@ -55,7 +55,7 @@ class MakerAPI:
         """
         r = self._request_sender('devices/{}/commands'.format(device_id))
         return r.json()
-    
+
     def get_device_capabilities(self, device_id):
         """
         Returns a list of device properties
@@ -88,3 +88,31 @@ class MakerAPI:
                 status[name] = {'currentValue': attribute.get('currentValue'), 'dataType': attribute.get('dataType')}
 
         return status
+
+    def modes(self):
+        """
+        Lists available modes
+        """
+        r = self._request_sender('modes')
+        return r.json()
+
+    def hsm_status(self):
+        """
+        Returns hsm status
+        """
+        r = self._request_sender('hsm')
+        return r.json()
+
+    def modes_set(self, mode_id):
+        """
+        Sets mode based on ID
+        """
+        r = self._request_sender('modes/{}'.format(mode_id))
+        return r.json()
+
+    def hsm_set(self, status):
+        """
+        Sets hsm status
+        """
+        r = self._request_sender('hsm/{}'.format(status))
+        return r.json()
